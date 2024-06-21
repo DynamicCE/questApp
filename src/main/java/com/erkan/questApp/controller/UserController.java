@@ -7,6 +7,7 @@ import com.erkan.questApp.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -55,5 +56,12 @@ class UserController {
         updatable.setPassword ( newPassword );
         DataResult<User> result = userService.updateUser ( updatable );
         return ResponseEntity.ok ( result);
+    }
+
+    @DeleteMapping("{id}/deleteUser")
+    ResponseEntity<DataResult<User>> deleteUser(@PathVariable Long id){
+        DataResult<Optional<User>> deletable = userService.getUserById ( id );
+        userService.deleteById(id);
+
     }
 }

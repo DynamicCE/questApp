@@ -1,6 +1,7 @@
 package com.erkan.questApp.business.abstracts;
 
 import com.erkan.questApp.core.DataResult;
+import com.erkan.questApp.core.Result;
 import com.erkan.questApp.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,6 @@ interface UserService {
     DataResult<User> updateUser ( User user );
 
     DataResult<User> getAllUsers ();
+
+    Result deleteById(Long id);
 }
