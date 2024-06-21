@@ -5,6 +5,7 @@ import com.erkan.questApp.core.Result;
 import com.erkan.questApp.entity.User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,7 +18,7 @@ interface UserService {
 
     DataResult<User> updateUserPassword ( Long id, String password );
 
-    DataResult<User> getAllUsers ();
+    DataResult<List<User>> getAllUsers ();
 
     DataResult<User> deleteById(Long id);
 }
