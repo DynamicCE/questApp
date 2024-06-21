@@ -37,8 +37,16 @@ class UserManager implements UserService {
 
     @Override
     public
-    DataResult<User> updateUser ( User user ) {
-        return new SuccessDataResult ( userRepository.save ( user ), "kullanıcı güncellendi" );
+    DataResult<User> updateUserPassword ( Long id, String password ) {
+        Optional<User> oldUser = userRepository.findById ( id );
+        if (oldUser.isPresent ( )) {
+            User updatable = oldUser.get ( );
+            updatable.setPassword ( password );
+            return new SuccessDataResult<> ( userRepository.save ( updatable ), "Şifreniz değiştirildi" );
+        }else {
+            return new ErrorDataResult<>("Kullanıcı bulunamadı");
+        }
+
     }
 
     @Override
@@ -58,7 +66,7 @@ class UserManager implements UserService {
         try {
             userRepository.deleteById ( id );
             return new SuccessResult ( "Kullanıcı başarıyla silindi" );
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ErrorResult ( "Kullanıcı silinirken bir hata meydana geldi" );
         }
     }

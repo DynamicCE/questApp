@@ -15,7 +15,7 @@ interface UserService {
 
     DataResult<User> createUser ( User user );
 
-    DataResult<User> updateUser ( User user );
+    DataResult<User> updateUserPassword ( Long id, String password );
 
     DataResult<User> getAllUsers ();
 

@@ -3,6 +3,7 @@ package com.erkan.questApp.controller;
 import com.erkan.questApp.business.abstracts.UserService;
 import com.erkan.questApp.core.DataResult;
 import com.erkan.questApp.core.ErrorDataResult;
+import com.erkan.questApp.core.Result;
 import com.erkan.questApp.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,20 +49,21 @@ class UserController {
     @PutMapping("/{id}/updateUserPassword")
     public
     ResponseEntity<DataResult<User>> updateUserPassword ( @PathVariable Long id, @RequestBody String newPassword ) {
-        DataResult<Optional<User>> oldUser = userService.getUserById ( id );
-        if (!oldUser.isSuccess ( ) && oldUser.getData ( ).isEmpty ( )) {
-            return ResponseEntity.status ( HttpStatus.NOT_FOUND ).body ( new ErrorDataResult<> ( "Kullanıcı bulunamadı" ) );
+        DataResult<User> result = userService.updateUserPassword ( id,newPassword );
+        if(result.isSuccess ()){
+            return ResponseEntity.ok (  result);
+        }else {
+            return ResponseEntity.status ( HttpStatus.NOT_FOUND ).body ( result );
         }
-        User updatable = oldUser.getData ( ).get ( );
-        updatable.setPassword ( newPassword );
-        DataResult<User> result = userService.updateUser ( updatable );
-        return ResponseEntity.ok ( result);
     }
 
     @DeleteMapping("{id}/deleteUser")
-    ResponseEntity<DataResult<User>> deleteUser(@PathVariable Long id){
-        DataResult<Optional<User>> deletable = userService.getUserById ( id );
-        userService.deleteById(id);
-
+    ResponseEntity<Result> deleteUser( @PathVariable Long id){
+        Result result = userService.deleteById(id);
+        if(result.isSuccess ()){
+            return ResponseEntity.ok (  result);
+        }else {
+            return ResponseEntity.status ( HttpStatus.NOT_FOUND ).body ( result );
+        }
     }
 }
