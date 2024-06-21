@@ -33,7 +33,7 @@ public class UserManager implements UserService {
 
     @Override
     public DataResult<User> createUser(User user) {
-        user.setStatus("A"); // Yeni kullanıcıyı aktif olarak işaretle
+        user.setStatus("A");
         try {
             User createdUser = userRepository.save(user);
             return new SuccessDataResult<>(createdUser, "Kullanıcı başarıyla oluşturuldu");
