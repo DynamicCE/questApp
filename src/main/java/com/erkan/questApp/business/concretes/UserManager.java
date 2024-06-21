@@ -39,12 +39,10 @@ class UserManager implements UserService {
     public
     DataResult<User> updateUserPassword ( Long id, String password ) {
         Optional<User> oldUser = userRepository.findById ( id );
-        if (oldUser.isPresent ( )) {
-            User updatable = oldUser.get ( );
-            updatable.setPassword ( password );
-            return new SuccessDataResult<> ( userRepository.save ( updatable ), "Şifreniz değiştirildi" );
-        }else {
-            return new ErrorDataResult<>("Kullanıcı bulunamadı");
+        if(oldUser.isPresent ()){
+            try {
+
+            }
         }
 
     }
@@ -58,16 +56,19 @@ class UserManager implements UserService {
 
     @Override
     @Transactional
-    public
-    Result deleteById ( Long id ) {
-        if (!userRepository.existsById ( id )) {
-            return new ErrorResult ( "Silinecek kullanıcı bulunamadı" );
-        }
-        try {
-            userRepository.deleteById ( id );
-            return new SuccessResult ( "Kullanıcı başarıyla silindi" );
-        } catch (Exception e) {
-            return new ErrorResult ( "Kullanıcı silinirken bir hata meydana geldi" );
+    public DataResult<User> deleteById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setStatus("D");
+            try {
+                userRepository.deleteById(id);
+                return new SuccessDataResult<>(user, "Kullanıcı başarıyla silindi");
+            } catch (Exception e) {
+                return new ErrorDataResult<>(user, "Kullanıcı silinirken bir hata meydana geldi");
+            }
+        } else {
+            return new ErrorDataResult<>("Silinecek kullanıcı bulunamadı");
         }
     }
 

@@ -58,12 +58,12 @@ class UserController {
     }
 
     @DeleteMapping("{id}/deleteUser")
-    ResponseEntity<Result> deleteUser( @PathVariable Long id){
-        Result result = userService.deleteById(id);
-        if(result.isSuccess ()){
-            return ResponseEntity.ok (  result);
-        }else {
-            return ResponseEntity.status ( HttpStatus.NOT_FOUND ).body ( result );
+    ResponseEntity<DataResult<User>> deleteUser(@PathVariable Long id) {
+        DataResult<User> result = userService.deleteById(id);
+        if (result.isSuccess()) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
         }
     }
 }

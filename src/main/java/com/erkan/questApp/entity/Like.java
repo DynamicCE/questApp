@@ -13,4 +13,6 @@ public class Like {
     Long userId;
 
     Long postId;
+
+    String status;
 }

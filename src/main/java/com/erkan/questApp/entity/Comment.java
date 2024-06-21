@@ -15,4 +15,6 @@ class Comment {
     Long postId;
 
     String text;
+
+    String status;
 }

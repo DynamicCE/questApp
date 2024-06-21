@@ -19,5 +19,5 @@ interface UserService {
 
     DataResult<User> getAllUsers ();
 
-    Result deleteById(Long id);
+    DataResult<User> deleteById(Long id);
 }

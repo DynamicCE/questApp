@@ -19,4 +19,5 @@ public class Post {
 
     String test;
 
+    String status;
 }
