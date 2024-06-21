@@ -1,0 +1,8 @@
+package com.erkan.questApp.repository;
+
+import com.erkan.questApp.entity.Comment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public
+interface CommentRepository extends JpaRepository<Comment,Long> {
+}
