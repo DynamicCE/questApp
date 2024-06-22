@@ -1,32 +1,19 @@
 package com.erkan.questApp.core.utilities.results;
 
-import java.util.Optional;
-
-public
-class ErrorDataResult<T> extends DataResult<T> {
-    public
-    ErrorDataResult ( T data, String message ) {
-        super ( data, false, message );
+public class ErrorDataResult<T> extends DataResult<T> {
+    public ErrorDataResult(T data, String message) {
+        super(data, false, message);
     }
 
-    public
-    ErrorDataResult ( Optional<T> data, String message ) {
-        super ( data, false, message );
+    public ErrorDataResult(T data) {
+        super(data, false);
     }
 
-    public
-    ErrorDataResult ( Optional<T> data ) {
-        super ( data, false );
+    public ErrorDataResult(String message) {
+        super(null, false, message);
     }
 
-    public
-    ErrorDataResult ( String message ) {
-        super ( Optional.empty ( ), false, message );
-    }
-
-    public
-    ErrorDataResult () {
-        super ( Optional.empty ( ), false );
+    public ErrorDataResult() {
+        super(null, false);
     }
 }
-

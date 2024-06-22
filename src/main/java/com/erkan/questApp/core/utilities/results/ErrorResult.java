@@ -1,14 +1,11 @@
 package com.erkan.questApp.core.utilities.results;
 
-public
-class ErrorResult extends Result {
-    public
-    ErrorResult ( String message ) {
-        super ( false, message );
+public class ErrorResult extends Result {
+    public ErrorResult() {
+        super(false);
     }
 
-    public
-    ErrorResult () {
-        super ( false );
+    public ErrorResult(String message) {
+        super(false, message);
     }
 }

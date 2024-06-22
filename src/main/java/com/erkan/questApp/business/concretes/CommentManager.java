@@ -10,7 +10,6 @@ import com.erkan.questApp.entity.Comment;
 import com.erkan.questApp.entity.Post;
 import com.erkan.questApp.entity.User;
 import com.erkan.questApp.repository.CommentRepository;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.util.Optional;
 
 @Service
@@ -58,15 +56,15 @@ public class CommentManager implements CommentService {
     public DataResult<Comment> getCommentById(@NotNull Long id) {
         return commentRepository.findByIdAndStatusNot(id, Status.DELETED.getCode())
                 .map(comment -> new SuccessDataResult<>(comment, "Yorum başarıyla getirildi"))
-                .orElse(new ErrorDataResult("Yorum bulunamadı"));
+                .orElseGet(() -> new ErrorDataResult<Comment>("Yorum bulunamadı"));
     }
 
     @Override
     @Transactional
     public Result createComment(@Valid Comment comment) {
         try {
-            Optional<User> userOptional = userManager.getUserById(comment.getUser().getId()).getData();
-            Optional<Post> postOptional = Optional.ofNullable ( postManager.getPostById ( comment.getPost ( ).getId ( ) ).getData ( ) );
+            Optional<User> userOptional = Optional.ofNullable(userManager.getUserById(comment.getUser().getId()).getData());
+            Optional<Post> postOptional = Optional.ofNullable(postManager.getPostById(comment.getPost().getId()).getData());
 
             if (userOptional.isEmpty() || postOptional.isEmpty()) {
                 return new ErrorResult("Kullanıcı veya gönderi bulunamadı");
@@ -91,7 +89,7 @@ public class CommentManager implements CommentService {
                     Comment updatedComment = commentRepository.save(existingComment);
                     return new SuccessDataResult<>(updatedComment, "Yorum başarıyla güncellendi");
                 })
-                .orElse(new SuccessDataResult<> ("Güncellenecek yorum bulunamadı"));
+                .orElseGet(() -> new ErrorDataResult<Comment>("Güncellenecek yorum bulunamadı"));
     }
 
     @Override
@@ -100,7 +98,7 @@ public class CommentManager implements CommentService {
             Page<Comment> comments = commentRepository.findAllByStatusNot(Status.DELETED.getCode(), pageable);
             return new SuccessDataResult<>(comments, "Tüm yorumlar başarıyla getirildi");
         } catch (Exception e) {
-            return new ErrorDataResult<>("Yorumlar getirilirken bir hata oluştu: " + e.getMessage());
+            return new ErrorDataResult<Page<Comment>>("Yorumlar getirilirken bir hata oluştu: " + e.getMessage());
         }
     }
 
@@ -110,7 +108,7 @@ public class CommentManager implements CommentService {
             Page<Comment> comments = commentRepository.findByPostIdAndStatusNot(postId, Status.DELETED.getCode(), pageable);
             return new SuccessDataResult<>(comments, "Gönderinin yorumları başarıyla getirildi");
         } catch (Exception e) {
-            return new ErrorDataResult<>("Yorumlar getirilirken bir hata oluştu: " + e.getMessage());
+            return new ErrorDataResult<Page<Comment>>("Yorumlar getirilirken bir hata oluştu: " + e.getMessage());
         }
     }
 
@@ -120,7 +118,7 @@ public class CommentManager implements CommentService {
             Page<Comment> comments = commentRepository.findByUserIdAndStatusNot(userId, Status.DELETED.getCode(), pageable);
             return new SuccessDataResult<>(comments, "Kullanıcının yorumları başarıyla getirildi");
         } catch (Exception e) {
-            return new ErrorDataResult<>("Yorumlar getirilirken bir hata oluştu: " + e.getMessage());
+            return new ErrorDataResult<Page<Comment>>("Yorumlar getirilirken bir hata oluştu: " + e.getMessage());
         }
     }
 
@@ -131,9 +129,9 @@ public class CommentManager implements CommentService {
                 .map(comment -> {
                     comment.setStatus(Status.DELETED.getCode());
                     Comment deletedComment = commentRepository.save(comment);
-                    return new SuccessDataResult<Comment>(deletedComment, "Yorum başarıyla silindi (soft delete)");
+                    return new SuccessDataResult<>(deletedComment, "Yorum başarıyla silindi (soft delete)");
                 })
-                .orElse(new ErrorDataResult<Comment>(null, "Silinecek yorum bulunamadı"));
+                .orElseGet(() -> new ErrorDataResult<Comment>("Silinecek yorum bulunamadı"));
     }
 
     @Override
@@ -143,8 +141,8 @@ public class CommentManager implements CommentService {
                 .map(comment -> {
                     comment.setStatus(newStatus.getCode());
                     Comment updatedComment = commentRepository.save(comment);
-                    return new SuccessDataResult<Comment>(updatedComment, "Yorum durumu başarıyla güncellendi");
+                    return new SuccessDataResult<>(updatedComment, "Yorum durumu başarıyla güncellendi");
                 })
-                .orElse(new ErrorDataResult<Comment>(null, "Durum değiştirilecek yorum bulunamadı"));
+                .orElseGet(() -> new ErrorDataResult<Comment>("Durum değiştirilecek yorum bulunamadı"));
     }
 }
