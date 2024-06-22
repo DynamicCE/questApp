@@ -17,12 +17,10 @@ public class Post {
 
     String title;
 
-    String test;
-
     String status;
 
     @ManyToOne
-    @JoinColumn(name="id",updatable = false,insertable = false)
+    @JoinColumn(name="user_id",updatable = false,insertable = false)
     private User user;
 
     @OneToMany(mappedBy = "post")

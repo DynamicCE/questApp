@@ -1,32 +1,29 @@
 package com.erkan.questApp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
-@Entity
 @Data
+@Entity
 public class Like {
     @Id
     Long id;
 
     Long userId;
-
     Long postId;
+    Long commentId;
 
     String status;
 
     @ManyToOne
-    @JoinColumn(name="id",updatable = false,insertable = false)
-    private Comment comment;
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name="id",updatable = false,insertable = false)
+    @JoinColumn(name = "post_id", insertable = false, updatable = false)
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name="id",updatable = false,insertable = false)
-    private User user;
+    @JoinColumn(name = "comment_id", insertable = false, updatable = false)
+    private Comment comment;
 }

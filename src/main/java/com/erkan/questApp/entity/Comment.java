@@ -14,18 +14,18 @@ class Comment {
     Long id;
 
     Long postId;
-
+    Long userId;
     String text;
 
     String status;
 
     @ManyToOne
-    @JoinColumn(name = "id", updatable = false, insertable = false)
+    @JoinColumn(name = "user_id", updatable = false, insertable = false)
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "post_id", updatable = false, insertable = false)
-    private Post post ;
+    private Post post;
 
     @OneToMany(mappedBy = "comment")
     private List<Like> likes;

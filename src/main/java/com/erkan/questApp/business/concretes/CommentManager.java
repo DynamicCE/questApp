@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentManager implements CommentService {
@@ -39,9 +40,9 @@ public class CommentManager implements CommentService {
     @Override
     public
     DataResult<Comment> createComment ( Comment comment ) {
-        User user = userManager.getUserById ( comment.getUser ( ).getId ( ) ).getData ( );
+        Optional<User> user = userManager.getUserById ( comment.getUser ( ).getId ( ) ).getData ( );
         Post post = postManager.getPostById ( comment.getPost ( ).getId ( ) ).getData ( );
-        comment.setUser ( user );
+        comment.setUser ( user.get () );
         comment.setPost ( post );
         try {
             Comment createdComment = commentRepository.save ( comment );
