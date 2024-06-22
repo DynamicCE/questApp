@@ -3,6 +3,7 @@ package com.erkan.questApp.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
@@ -17,4 +18,6 @@ class Comment {
     String text;
 
     String status;
+
+    @ManyToOne()
 }

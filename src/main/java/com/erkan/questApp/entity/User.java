@@ -1,12 +1,11 @@
 package com.erkan.questApp.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,5 +22,10 @@ public class User {
     String password;
 
     String status;
+@OneToMany(mappedBy = "User",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "User")
+private List<Comment> comments;
 }
 
