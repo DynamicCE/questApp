@@ -24,10 +24,10 @@ class Comment {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "id", updatable = false, insertable = false)
+    @JoinColumn(name = "post_id", updatable = false, insertable = false)
     private Post post ;
 
-    @OneToMany(mappedBy = "Comment")
+    @OneToMany(mappedBy = "comment")
     private List<Like> likes;
 
 

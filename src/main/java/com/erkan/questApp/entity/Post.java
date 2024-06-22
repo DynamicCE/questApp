@@ -25,10 +25,10 @@ public class Post {
     @JoinColumn(name="id",updatable = false,insertable = false)
     private User user;
 
-    @OneToMany(mappedBy = "Post")
+    @OneToMany(mappedBy = "post")
     private List<Like> likes;
 
-    @OneToMany(mappedBy = "Post")
+    @OneToMany(mappedBy = "post")
     private List<Comment> comments;
 
 
