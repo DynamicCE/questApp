@@ -1,14 +1,11 @@
 package com.erkan.questApp.controller;
 
 import com.erkan.questApp.business.abstracts.UserService;
-import com.erkan.questApp.core.DataResult;
-import com.erkan.questApp.core.ErrorDataResult;
-import com.erkan.questApp.core.Result;
+import com.erkan.questApp.core.utilities.results.DataResult;
 import com.erkan.questApp.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;

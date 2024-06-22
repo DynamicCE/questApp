@@ -1,9 +1,9 @@
 package com.erkan.questApp.business.concretes;
 
 import com.erkan.questApp.business.abstracts.LikeService;
-import com.erkan.questApp.core.DataResult;
-import com.erkan.questApp.core.ErrorDataResult;
-import com.erkan.questApp.core.SuccessDataResult;
+import com.erkan.questApp.core.utilities.results.DataResult;
+import com.erkan.questApp.core.utilities.results.ErrorDataResult;
+import com.erkan.questApp.core.utilities.results.SuccessDataResult;
 import com.erkan.questApp.entity.Like;
 import com.erkan.questApp.entity.Post;
 import com.erkan.questApp.entity.User;

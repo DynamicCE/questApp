@@ -1,4 +1,4 @@
-package com.erkan.questApp.core;
+package com.erkan.questApp.core.utilities.results;
 
 
 import java.util.Optional;

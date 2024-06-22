@@ -1,7 +1,9 @@
 package com.erkan.questApp.business.concretes;
 
 import com.erkan.questApp.business.abstracts.PostService;
-import com.erkan.questApp.core.*;
+import com.erkan.questApp.core.utilities.results.DataResult;
+import com.erkan.questApp.core.utilities.results.ErrorDataResult;
+import com.erkan.questApp.core.utilities.results.SuccessDataResult;
 import com.erkan.questApp.entity.Post;
 import com.erkan.questApp.entity.User;
 import com.erkan.questApp.repository.PostRepository;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PostManager implements PostService {
@@ -24,10 +25,11 @@ public class PostManager implements PostService {
     }
 
     @Override
-    public DataResult<Post> getPostById(Long id) {
+    public
+    DataResult<Post> getPostById( Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Gönderi bulunamadı"));
-        return new SuccessDataResult<>(post, "Gönderi başarıyla getirildi");
+        return new SuccessDataResult<> (post, "Gönderi başarıyla getirildi");
     }
 
     @Override
@@ -38,7 +40,7 @@ public class PostManager implements PostService {
             Post createdPost = postRepository.save(post);
             return new SuccessDataResult<>(createdPost, "Gönderi başarıyla oluşturuldu");
         } catch (Exception e) {
-            return new ErrorDataResult<>("Gönderi oluşturulurken bir hata meydana geldi: " + e.getMessage());
+            return new ErrorDataResult<> ("Gönderi oluşturulurken bir hata meydana geldi: " + e.getMessage());
         }
     }
 

@@ -1,7 +1,9 @@
 package com.erkan.questApp.business.concretes;
 
 import com.erkan.questApp.business.abstracts.UserService;
-import com.erkan.questApp.core.*;
+import com.erkan.questApp.core.utilities.results.DataResult;
+import com.erkan.questApp.core.utilities.results.ErrorDataResult;
+import com.erkan.questApp.core.utilities.results.SuccessDataResult;
 import com.erkan.questApp.entity.User;
 import com.erkan.questApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +24,13 @@ public class UserManager implements UserService {
     }
 
     @Override
-    public DataResult<Optional<User>> getUserById(Long id) {
+    public
+    DataResult<Optional<User>> getUserById( Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent() && !"D".equals(userOptional.get().getStatus())) {
-            return new SuccessDataResult(userOptional, "Kullanıcı başarıyla getirildi");
+            return new SuccessDataResult (userOptional, "Kullanıcı başarıyla getirildi");
         } else {
-            return new ErrorDataResult<>("Kullanıcı bulunamadı veya silinmiş");
+            return new ErrorDataResult<> ("Kullanıcı bulunamadı veya silinmiş");
         }
     }
 
