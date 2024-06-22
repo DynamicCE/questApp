@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -56,7 +58,7 @@ public class CommentManager implements CommentService {
     public DataResult<Comment> getCommentById(@NotNull Long id) {
         return commentRepository.findByIdAndStatusNot(id, Status.DELETED.getCode())
                 .map(comment -> new SuccessDataResult<>(comment, "Yorum başarıyla getirildi"))
-                .orElse(new ErrorDataResult<>("Yorum bulunamadı"));
+                .orElse(new ErrorDataResult("Yorum bulunamadı"));
     }
 
     @Override
