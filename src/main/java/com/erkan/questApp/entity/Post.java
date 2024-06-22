@@ -1,9 +1,9 @@
 package com.erkan.questApp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 
 @Data
@@ -20,4 +20,18 @@ public class Post {
     String test;
 
     String status;
+
+    @ManyToOne
+    @JoinColumn(name="id",updatable = false,insertable = false)
+    private User user;
+
+    @OneToMany(mappedBy = "Post")
+    private List<Like> likes;
+
+    @OneToMany(mappedBy = "Post")
+    private List<Comment> comments;
+
+
+
+
 }

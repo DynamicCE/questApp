@@ -12,7 +12,8 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
-public class User {
+public
+class User {
     @Id
     @Column(name = "id")
     Long id;
@@ -22,10 +23,14 @@ public class User {
     String password;
 
     String status;
-@OneToMany(mappedBy = "User",cascade = CascadeType.ALL,orphanRemoval = true)
+
+    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
     @OneToMany(mappedBy = "User")
-private List<Comment> comments;
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "User")
+    private List<Like> likes;
 }
 
