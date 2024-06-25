@@ -24,7 +24,7 @@ class User {
 
     String status;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     @OneToMany(mappedBy = "user")

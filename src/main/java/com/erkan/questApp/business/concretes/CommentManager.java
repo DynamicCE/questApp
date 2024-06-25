@@ -3,149 +3,137 @@ package com.erkan.questApp.business.concretes;
 import com.erkan.questApp.business.abstracts.CommentService;
 import com.erkan.questApp.core.utilities.results.*;
 import com.erkan.questApp.entity.Comment;
-import com.erkan.questApp.entity.Post;
-import com.erkan.questApp.entity.User;
 import com.erkan.questApp.repository.CommentRepository;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Service
-@Validated
 public class CommentManager implements CommentService {
-
+    private static final Logger logger = LoggerFactory.getLogger(CommentManager.class);
     private final CommentRepository commentRepository;
-    private final PostManager postManager;
-    private final UserManager userManager;
 
-    public enum Status {
-        ACTIVE("A"),
-        PASSIVE("P"),
-        DELETED("D");
-
-        private final String code;
-
-        Status(String code) {
-            this.code = code;
-        }
-
-        public String getCode() {
-            return code;
-        }
-    }
-
-    @Autowired
-    public CommentManager(CommentRepository commentRepository, PostManager postManager, UserManager userManager) {
+    public CommentManager(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
-        this.postManager = postManager;
-        this.userManager = userManager;
     }
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
-    public DataResult<Comment> getCommentById(@NotNull Long id) {
-        Optional<Comment> commentOptional = commentRepository.findByIdAndStatusNot(id, Status.DELETED.getCode());
-        return commentOptional
-                .map(comment -> new SuccessDataResult<>(comment, "Yorum başarıyla getirildi"))
-                .orElseGet(() -> new ErrorDataResult<>("Yorum bulunamadı"));
+    public DataResult<Comment> getCommentById(Long id) {
+        Optional<Comment> commentOptional = commentRepository.findById(id);
+        if (commentOptional.isPresent()) {
+            return new SuccessDataResult<>(commentOptional.get(), "Yorum başarıyla getirildi.");
+        } else {
+            logger.warn ( "Yorum bulunamadı." );
+            return new ErrorDataResult<>("Yorum bulunamadı.");
+        }
     }
 
     @Override
     @Transactional
-    public Result createComment(@Valid Comment comment) {
+    public Result createComment(Comment comment) {
         try {
-            DataResult<User> userResult = userManager.getUserById(comment.getUser().getId());
-            DataResult<Post> postResult = postManager.getPostById(comment.getPost().getId());
-
-            if (!userResult.isSuccess() || !postResult.isSuccess()) {
-                return new ErrorResult("Kullanıcı veya gönderi bulunamadı");
-            }
-
-            comment.setUser(userResult.getData());
-            comment.setPost(postResult.getData());
-            comment.setStatus(Status.ACTIVE.getCode());
-            Comment savedComment = commentRepository.save(comment);
-            return new SuccessDataResult<>(savedComment, "Yorum başarıyla oluşturuldu");
+            comment.setStatus ( "A" );
+            commentRepository.save(comment);
+            return new SuccessResult("Yorum başarıyla oluşturuldu.");
         } catch (Exception e) {
+            logger.error ( "Yorum oluşturulurken bir hata oluştu: " + e.getMessage() );
             return new ErrorResult("Yorum oluşturulurken bir hata oluştu: " + e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public Result updateComment(@Valid Comment comment) {
-        Optional<Comment> existingCommentOptional = commentRepository.findByIdAndStatusNot(comment.getId(), Status.DELETED.getCode());
-        if (existingCommentOptional.isPresent()) {
-            Comment existingComment = existingCommentOptional.get();
-            existingComment.setText(comment.getText());
-            Comment updatedComment = commentRepository.save(existingComment);
-            return new SuccessDataResult<>(updatedComment, "Yorum başarıyla güncellendi");
-        } else {
-            return new ErrorResult("Güncellenecek yorum bulunamadı");
+    public Result updateComment(Long commentId, Comment newComment) {
+        if (!commentRepository.existsById(commentId)) {
+            return new ErrorResult("Güncellenecek yorum bulunamadı.");
+        }
+        Optional<Comment> commentOptional = commentRepository.findById ( commentId );
+        if(!commentOptional.isPresent ()){
+            return new ErrorResult("Güncellenecek yorum bulunamadı.");
+        }
+        try {
+            Comment existingComment = commentOptional.get ();
+            existingComment.setText ( newComment.getText () );
+            existingComment.setStatus ( "U" );
+            commentRepository.save(existingComment);
+            return new SuccessResult("Yorum başarıyla güncellendi.");
+        } catch (Exception e) {
+            logger.error ( "Yorum güncellenirken bir hata oluştu: " + e.getMessage() );
+            return new ErrorResult("Yorum güncellenirken bir hata oluştu: " + e.getMessage());
         }
     }
 
+
     @Override
+    @Transactional
     public DataResult<Page<Comment>> getAllComments(Pageable pageable) {
         try {
-            Page<Comment> comments = commentRepository.findAllByStatusNot(Status.DELETED.getCode(), pageable);
-            return new SuccessDataResult<>(comments, "Tüm yorumlar başarıyla getirildi");
+            Page<Comment> comments = commentRepository.findAll(pageable);
+            return new SuccessDataResult<>(comments, "Yorumlar başarıyla getirildi.");
         } catch (Exception e) {
+            logger.error ( "Yorumlar getirilirken bir hata oluştu: " + e.getMessage() );
             return new ErrorDataResult<>("Yorumlar getirilirken bir hata oluştu: " + e.getMessage());
         }
     }
+
 
     @Override
     public DataResult<Page<Comment>> getCommentsByPostId(Long postId, Pageable pageable) {
         try {
-            Page<Comment> comments = commentRepository.findByPostIdAndStatusNot(postId, Status.DELETED.getCode(), pageable);
-            return new SuccessDataResult<>(comments, "Gönderinin yorumları başarıyla getirildi");
+            Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
+            return new SuccessDataResult<>(comments, "Gönderiye ait yorumlar başarıyla getirildi.");
         } catch (Exception e) {
-            return new ErrorDataResult<>("Yorumlar getirilirken bir hata oluştu: " + e.getMessage());
+            logger.error ( "Gönderiye ait yorumlar getirilirken bir hata oluştu: " + e.getMessage() );
+            return new ErrorDataResult<>("Gönderiye ait yorumlar getirilirken bir hata oluştu: " + e.getMessage());
         }
     }
 
     @Override
     public DataResult<Page<Comment>> getCommentsByUserId(Long userId, Pageable pageable) {
         try {
-            Page<Comment> comments = commentRepository.findByUserIdAndStatusNot(userId, Status.DELETED.getCode(), pageable);
-            return new SuccessDataResult<>(comments, "Kullanıcının yorumları başarıyla getirildi");
+            Page<Comment> comments = commentRepository.findByUserId(userId, pageable);
+            return new SuccessDataResult<>(comments, "Kullanıcıya ait yorumlar başarıyla getirildi.");
         } catch (Exception e) {
-            return new ErrorDataResult<>("Yorumlar getirilirken bir hata oluştu: " + e.getMessage());
+            logger.error ( "Kullanıcıya ait yorumlar getirilirken bir hata oluştu: " + e.getMessage() );
+            return new ErrorDataResult<>("Kullanıcıya ait yorumlar getirilirken bir hata oluştu: " + e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public Result softDeleteCommentById(@NotNull Long id) {
-        Optional<Comment> commentOptional = commentRepository.findByIdAndStatusNot(id, Status.DELETED.getCode());
-        if (commentOptional.isPresent()) {
+    public Result softDeleteCommentById(Long id) {
+        Optional<Comment> commentOptional = commentRepository.findById(id);
+            if (commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
-            comment.setStatus(Status.DELETED.getCode());
-            Comment deletedComment = commentRepository.save(comment);
-            return new SuccessDataResult<>(deletedComment, "Yorum başarıyla silindi (soft delete)");
-        } else {
-            return new ErrorResult("Silinecek yorum bulunamadı");
+            comment.setStatus ("D");
+            commentRepository.save(comment);
+            return new SuccessResult("Yorum başarıyla silindi");
         }
+        return new ErrorResult("Silinecek yorum bulunamadı.");
     }
 
+    // yorum durumlarını yönetmek
+    /*
     @Override
     @Transactional
-    public Result changeCommentStatus(@NotNull Long id, @NotNull Status newStatus) {
-        Optional<Comment> commentOptional = commentRepository.findByIdAndStatusNot(id, Status.DELETED.getCode());
+    public Result changeCommentStatus(Long id, Comment.Status newStatus) {
+        Optional<Comment> commentOptional = commentRepository.findById(id);
         if (commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
-            comment.setStatus(newStatus.getCode());
-            Comment updatedComment = commentRepository.save(comment);
-            return new SuccessDataResult<>(updatedComment, "Yorum durumu başarıyla güncellendi");
-        } else {
-            return new ErrorResult("Durum değiştirilecek yorum bulunamadı");
+            comment.setStatus(newStatus);
+            commentRepository.save(comment);
+            return new SuccessResult("Yorum durumu başarıyla güncellendi.");
         }
+        return new ErrorResult("Durumu güncellenecek yorum bulunamadı.");
     }
+    */
 }

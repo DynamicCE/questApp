@@ -14,7 +14,9 @@ class Comment {
     Long id;
 
     Long postId;
+
     Long userId;
+
     String text;
 
     String status;

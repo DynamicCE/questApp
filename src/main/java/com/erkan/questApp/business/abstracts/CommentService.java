@@ -1,7 +1,5 @@
 package com.erkan.questApp.business.abstracts;
 
-
-import com.erkan.questApp.business.concretes.CommentManager;
 import com.erkan.questApp.core.utilities.results.DataResult;
 import com.erkan.questApp.core.utilities.results.Result;
 import com.erkan.questApp.entity.Comment;
@@ -10,11 +8,11 @@ import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
 
-    DataResult<Comment> getCommentById( Long id);
+    DataResult<Comment> getCommentById(Long id);
 
-    Result createComment( Comment comment);
+    Result createComment(Comment comment);
 
-    Result updateComment(Comment comment);
+    Result updateComment(Long id, Comment comment);
 
     DataResult<Page<Comment>> getAllComments(Pageable pageable);
 
@@ -24,5 +22,6 @@ public interface CommentService {
 
     Result softDeleteCommentById(Long id);
 
-    Result changeCommentStatus(Long id, CommentManager.Status newStatus);
+    // Sadece yorum durumlarını yönetmek istiyorsanız bunu dahil edin
+    // Result changeCommentStatus(Long id, Comment.Status newStatus);
 }

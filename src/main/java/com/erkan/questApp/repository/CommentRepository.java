@@ -14,4 +14,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findAllByStatusNot(String status, Pageable pageable);
     Page<Comment> findByPostIdAndStatusNot(Long postId, String status, Pageable pageable);
     Page<Comment> findByUserIdAndStatusNot(Long userId, String status, Pageable pageable);
+
+    Page<Comment> findByPostId ( Long postId, Pageable pageable );
+
+    Page<Comment> findByUserId ( Long userId, Pageable pageable );
 }
