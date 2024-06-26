@@ -3,7 +3,7 @@ package com.erkan.questApp.entity.dto;
 import lombok.Data;
 
 @Data
-public class LikeDto {
+public class LikeDTO {
     private Long id;
     private Long userId;
     private Long postId;

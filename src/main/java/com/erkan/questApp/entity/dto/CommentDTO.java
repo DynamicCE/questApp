@@ -4,7 +4,7 @@ package com.erkan.questApp.entity.dto;
 import lombok.Data;
 
 @Data
-public class CommentDto {
+public class CommentDTO {
     private Long id;
     private Long postId;
     private Long userId;

@@ -4,7 +4,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class PostDto{
+public class PostDTO {
     private Long id;
     private Long userId;
     private String title;
